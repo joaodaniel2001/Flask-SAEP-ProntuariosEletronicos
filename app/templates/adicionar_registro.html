@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block titulo %}Adicionar Registro{% endblock %}
+{% block titulo_pagina %}Adicionar Registro ao Prontuário de {{ paciente.nome }}{% endblock %}
+
+{% block content %}
+<p><strong>Paciente:</strong> {{ paciente.nome }} | <strong>CPF:</strong> {{ paciente.cpf }}</p>
+
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <form method="POST" action="{{ url_for('adicionar_registro', paciente_id=paciente.id) }}"
+            class="p-4 border rounded shadow-sm bg-light">
+            {{ form.hidden_tag() }}
+
+            <div class="mb-3">
+                {{ form.tipo_registro.label(class="form-label") }}
+                {{ form.tipo_registro(class="form-select") }}
+                {% for error in form.tipo_registro.errors %}<span class="text-danger">{{ error }}</span>{% endfor %}
+            </div>
+
+            <div class="mb-3">
+                {{ form.descricao.label(class="form-label") }}
+                {{ form.descricao(class="form-control", rows=5) }}
+                {% for error in form.descricao.errors %}<span class="text-danger">{{ error }}</span>{% endfor %}
+            </div>
+
+            <div class="d-grid gap-2">
+                {{ form.btnSubmit(class="btn btn-primary mt-3") }}
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block titulo %}Editar Paciente{% endblock %}
+{% block titulo_pagina %}Editar Dados de {{ paciente.nome }}{% endblock %}
+
+{% block content %}
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <form method="POST" action="{{ url_for('edit_paciente', paciente_id=paciente.id) }}" class="p-4 border rounded shadow-sm bg-light">
+                {{ form.hidden_tag() }}
+
+                {% for field in form if field.name not in ['csrf_token', 'btnSubmit'] %}
+                    <div class="mb-3">
+                        {{ field.label(class="form-label") }}
+                        {% if field.type in ['StringField', 'PasswordField', 'DateField', 'IntegerField'] %}
+                            {{ field(class="form-control") }}
+                        {% elif field.type == 'TextAreaField' %}
+                            {{ field(class="form-control", rows=3) }}
+                        {% elif field.type == 'SelectField' %}
+                             {{ field(class="form-select") }}
+                        {% endif %}
+                        
+                        {% if field.errors %}
+                            {% for error in field.errors %}
+                                <span class="text-danger">{{ error }}</span>
+                            {% endfor %}
+                        {% endif %}
+                    </div>
+                {% endfor %}
+
+                <div class="d-grid gap-2">
+                    {{ form.btnSubmit(class="btn btn-primary mt-3") }}
+                </div>
+            </form>
+            
+            <form method="POST" action="{{ url_for('delete_paciente', paciente_id=paciente.id) }}" onsubmit="return confirm('ATENÇÃO: Isso excluirá permanentemente o paciente e todos os seus registros de prontuário. Tem certeza?');" class="mt-4">
+                <button type="submit" class="btn btn-danger">Excluir Paciente</button>
+            </form>
+        </div>
+    </div>
+{% endblock %}

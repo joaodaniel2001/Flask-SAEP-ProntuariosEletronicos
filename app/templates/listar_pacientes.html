@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block titulo %}Pacientes{% endblock %}
+{% block titulo_pagina %}Gerenciamento de Pacientes{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between mb-3">
+    <a href="{{ url_for('novo_paciente') }}" class="btn btn-success">Cadastrar Novo Paciente</a>
+
+    <form method="GET" action="{{ url_for('listar_pacientes') }}" class="d-flex">
+        <input class="form-control me-2" type="search" placeholder="Buscar por Nome ou CPF" aria-label="Search"
+            name="pesquisa" value="{{ request.args.get('pesquisa', '') }}">
+        <button class="btn btn-outline-primary" type="submit">Buscar</button>
+    </form>
+</div>
+
+<table class="table table-striped table-hover">
+    <thead>
+        <tr>
+            <th>Nome</th>
+            <th>CPF</th>
+            <th>Data Nasc.</th>
+            <th>Alergias</th>
+            <th>Ações</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for paciente in pacientes %}
+        <tr>
+            <td>{{ paciente.nome }}</td>
+            <td>{{ paciente.cpf }}</td>
+            <td>{{ paciente.data_nascimento.strftime('%d/%m/%Y') }}</td>
+            <td>{{ paciente.alergias|truncate(50) }}</td>
+            <td>
+                <a href="{{ url_for('ver_prontuario', paciente_id=paciente.id) }}"
+                    class="btn btn-sm btn-primary">Prontuário</a>
+                <a href="{{ url_for('edit_paciente', paciente_id=paciente.id) }}"
+                    class="btn btn-sm btn-outline-secondary">Editar</a>
+            </td>
+        </tr>
+        {% else %}
+        <tr>
+            <td colspan="5">Nenhum paciente cadastrado.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

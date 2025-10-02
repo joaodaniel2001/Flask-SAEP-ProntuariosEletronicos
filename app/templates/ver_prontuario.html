@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% block titulo %}{{ paciente.nome }}{% endblock %}
+{% block titulo_pagina %}Prontuário de {{ paciente.nome }}{% endblock %}
+
+{% block content %}
+    <div class="row">
+        
+        <div class="col-lg-4 mb-4">
+            <div class="card border-primary">
+                <div class="card-header bg-primary text-white">
+                    Detalhes do Paciente
+                </div>
+                <div class="card-body">
+                    <p><strong>CPF:</strong> {{ paciente.cpf }}</p>
+                    <p><strong>Nascimento:</strong> {{ paciente.data_nascimento.strftime('%d/%m/%Y') }}</p>
+                    <p><strong>Alergias:</strong> {{ paciente.alergias }}</p>
+                    <p><strong>Medicações em Uso:</strong> {{ paciente.medicamentos_uso }}</p>
+                    <a href="{{ url_for('edit_paciente', paciente_id=paciente.id) }}" class="btn btn-sm btn-outline-secondary mt-2">Editar Dados Cadastrais</a>
+                </div>
+            </div>
+
+            <div class="card mt-4 border-success">
+                <div class="card-header bg-success text-white">
+                    Adicionar Novo Registro
+                </div>
+                <div class="card-body">
+                    <form method="POST" action="{{ url_for('ver_prontuario', paciente_id=paciente.id) }}">
+                        {{ form_registro.hidden_tag() }}
+
+                        <div class="mb-3">
+                            {{ form_registro.tipo_registro.label(class="form-label") }}
+                            {{ form_registro.tipo_registro(class="form-select") }}
+                        </div>
+                        
+                        <div class="mb-3">
+                            {{ form_registro.descricao.label(class="form-label") }}
+                            {{ form_registro.descricao(class="form-control", rows=4) }}
+                        </div>
+
+                        <div class="d-grid">
+                            {{ form_registro.btnSubmit(class="btn btn-success") }}
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-8">
+            <h3>Histórico de Registros</h3>
+
+            {% if registros %}
+                {% for registro in registros %}
+                    <div class="card mb-3">
+                        <div class="card-header bg-light">
+                            <span class="badge bg-secondary">{{ registro.tipo_registro }}</span>
+                            <small class="text-muted float-end">{{ registro.data_registro.strftime('%d/%m/%Y %H:%M') }} - Profissional: {{ registro.profissional.nome }}</small>
+                        </div>
+                        <div class="card-body">
+                            <p class="card-text">{{ registro.descricao }}</p>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="alert alert-info">Nenhum registro no prontuário deste paciente.</div>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}
